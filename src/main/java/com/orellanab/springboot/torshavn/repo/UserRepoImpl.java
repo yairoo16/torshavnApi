@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.orellanab.springboot.torshavn.entity.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.orellanab.springboot.torshavn.entity.AppUser;
 import com.orellanab.springboot.torshavn.repo.interfaces.UserRepo;
 
 @Repository
@@ -23,15 +23,38 @@ public class UserRepoImpl implements UserRepo {
 	}
 
 	@Override
-	public List<AppUser> findAllUsers() {
+	public List<User> findAllUsers() {
 		
 		Session currentSession = _entityManager.unwrap(Session.class);
 		
-		Query<AppUser> query = currentSession.createQuery("from User", AppUser.class);
+		Query<User> query = currentSession.createQuery("from User", User.class);
 		
-		List<AppUser> users = query.getResultList();
+		List<User> users = query.getResultList();
 		
 		return users;
+	}
+
+	@Override
+	public User loadUserByUsername(String username) {
+
+		Session currentSession = _entityManager.unwrap(Session.class);
+
+		Query<User> query = currentSession.createQuery("from User where username =: username ", User.class);
+		query.setParameter("username", username);
+
+		User users = query.getSingleResult();
+
+		return users;
+	}
+
+	@Override
+	public User saveUser(User user) {
+
+		Session currentSession = _entityManager.unwrap(Session.class);
+
+		currentSession.save(user);
+		return user;
+
 	}
 
 }

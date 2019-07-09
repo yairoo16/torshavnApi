@@ -8,6 +8,7 @@ import com.orellanab.springboot.torshavn.entity.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.orellanab.springboot.torshavn.repo.interfaces.UserRepo;
@@ -42,9 +43,9 @@ public class UserRepoImpl implements UserRepo {
 		Query<User> query = currentSession.createQuery("from User where username =: username ", User.class);
 		query.setParameter("username", username);
 
-		User users = query.getSingleResult();
+		User user = query.getSingleResult();
 
-		return users;
+		return user;
 	}
 
 	@Override
@@ -55,6 +56,29 @@ public class UserRepoImpl implements UserRepo {
 		currentSession.save(user);
 		return user;
 
+	}
+
+	@Override
+	public boolean usernameExists(String username) {
+		
+		Session currentSession = _entityManager.unwrap(Session.class);
+
+		Query<User> query = currentSession.createQuery("from User where username =: username ", User.class);
+		query.setParameter("username", username);
+		
+		User user = null;
+		
+		try {
+			
+			user = query.getSingleResult();
+			if (user != null)
+				return true;
+
+		} catch (Exception ex) {
+			throw new UsernameNotFoundException("User not found with username: " + username);
+		}
+
+		return false;
 	}
 
 }

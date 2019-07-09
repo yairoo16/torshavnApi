@@ -12,6 +12,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,16 +28,20 @@ public class AuthController {
 	private AuthenticationManager authenticationManager;
 
 	private JwtTokenUtil jwtTokenUtil;
+	
+	private PasswordEncoder passwordEncoder;
 
 	private UserService userService;
 
 	@Autowired
 	public AuthController(AuthenticationManager authenticationManager,
 						  JwtTokenUtil jwtTokenUtil,
+						  PasswordEncoder passwordEncoder,
 						  UserService userService
 						  ) {
 		this.authenticationManager = authenticationManager;
 		this.jwtTokenUtil = jwtTokenUtil;
+		this.passwordEncoder = passwordEncoder;
 		this.userService = userService;
 	}
 	
@@ -48,16 +53,22 @@ public class AuthController {
 
 		final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
 
-		final String token = jwtTokenUtil.generateToken(userDetails);
+		// final String token = jwtTokenUtil.generateToken(userDetails);
+		final String token = jwtTokenUtil.generateToken(user.getUsername());
 
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 	
-//	@CrossOrigin
-//	@PostMapping("/register")
-//	public AppUser register(@RequestBody UserDTO user) {
-//		return this.authService.findByUsername(user.getEmail());
-//	}
+	 @PostMapping("/register")
+	  public String register(@RequestBody User user) {
+	    if (this.userService.usernameExists(user.getUsername())) {
+	      return "EXISTS";
+	    }
+
+	    user.encodePassword(this.passwordEncoder);
+	    this.userService.saveUser(user);
+	    return this.jwtTokenUtil.generateToken(user.getUsername());
+	  }
 
 	private void authenticate(String username, String password) throws Exception {
 		try {

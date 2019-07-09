@@ -64,6 +64,11 @@ public class UserService implements UserDetailsService {
 
 		return this.userRepo.saveUser(user);
 	}
+	
+	public boolean usernameExists(String username) {
+		
+		return this.userRepo.usernameExists(username);
+	}
 
 
 

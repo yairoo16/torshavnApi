@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Entity
 @Table(name="user", schema="public")
@@ -47,6 +49,10 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public void encodePassword(PasswordEncoder passwordEncoder) {
+	    this.password = passwordEncoder.encode(this.password);
+	  }
 
 	@Override
 	public String toString() {

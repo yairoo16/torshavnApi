@@ -11,4 +11,6 @@ public interface UserRepo {
 	public User loadUserByUsername(String username);
 
 	public User saveUser(User user);
+	
+	public boolean usernameExists(String username);
 }

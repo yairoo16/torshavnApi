@@ -1,6 +1,7 @@
 package com.orellanab.springboot.torshavn.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,13 +47,13 @@ public class UserService implements UserDetailsService {
 //
 //			return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
 
-			if ("test123".equals(username)) {
-				return new
-						org.springframework.security.core.userdetails.User("test123", "$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6",
-						new ArrayList<>());
-			} else {
-				throw new UsernameNotFoundException("User not found with username: " + username);
-			}
+//			return new
+//					org.springframework.security.core.userdetails.User(username, "$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6",
+//					new ArrayList<>());
+
+			return new
+					org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+					new ArrayList<>());
 
 		} else {
 			throw new UsernameNotFoundException("User not found with username: " + username);

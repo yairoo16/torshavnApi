@@ -5,19 +5,15 @@ import com.orellanab.springboot.torshavn.security.JwtResponse;
 import com.orellanab.springboot.torshavn.security.JwtTokenUtil;
 import com.orellanab.springboot.torshavn.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.orellanab.springboot.torshavn.dto.UserDTO;
 
@@ -28,7 +24,7 @@ public class AuthController {
 	private AuthenticationManager authenticationManager;
 
 	private JwtTokenUtil jwtTokenUtil;
-	
+
 	private PasswordEncoder passwordEncoder;
 
 	private UserService userService;
@@ -44,6 +40,17 @@ public class AuthController {
 		this.passwordEncoder = passwordEncoder;
 		this.userService = userService;
 	}
+
+	@GetMapping("/authenticate")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void authenticate() {
+
+		// we don't have to do anything here
+		// this is just a secure endpoint and the JWTFilter
+		// validates the token
+		// this service is called at startup of the app to check
+		// if the jwt token is still valid
+	}
 	
 	@CrossOrigin
 	@PostMapping("/login")
@@ -52,23 +59,22 @@ public class AuthController {
 		authenticate(user.getUsername(), user.getPassword());
 
 		final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
-
-		// final String token = jwtTokenUtil.generateToken(userDetails);
 		final String token = jwtTokenUtil.generateToken(user.getUsername());
 
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
-	
-	 @PostMapping("/register")
-	  public String register(@RequestBody User user) {
-	    if (this.userService.usernameExists(user.getUsername())) {
-	      return "EXISTS";
-	    }
 
-	    user.encodePassword(this.passwordEncoder);
-	    this.userService.saveUser(user);
-	    return this.jwtTokenUtil.generateToken(user.getUsername());
-	  }
+	@CrossOrigin
+	@PostMapping("/register")
+	public String register(@RequestBody User user) {
+		if (this.userService.usernameExists(user.getUsername())) {
+			return "EXISTS";
+		}
+
+		user.encodePassword(this.passwordEncoder);
+		this.userService.saveUser(user);
+		return this.jwtTokenUtil.generateToken(user.getUsername());
+	}
 
 	private void authenticate(String username, String password) throws Exception {
 		try {

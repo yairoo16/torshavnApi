@@ -3,6 +3,7 @@ package com.orellanab.springboot.torshavn.repo;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import com.orellanab.springboot.torshavn.entity.User;
 import org.hibernate.Session;
@@ -36,6 +37,7 @@ public class UserRepoImpl implements UserRepo {
 	}
 
 	@Override
+	@Transactional
 	public User loadUserByUsername(String username) {
 
 		Session currentSession = _entityManager.unwrap(Session.class);
@@ -75,7 +77,8 @@ public class UserRepoImpl implements UserRepo {
 				return true;
 
 		} catch (Exception ex) {
-			throw new UsernameNotFoundException("User not found with username: " + username);
+			return false;
+			// throw new UsernameNotFoundException("User not found with username: " + username);
 		}
 
 		return false;

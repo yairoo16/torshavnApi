@@ -25,6 +25,10 @@ public class User implements Serializable {
 	private String username;
 	@Column
 	private String password;
+	@Column
+	private String name;
+	@Column
+	private String email;
 
 	public long getId() {
 		return id;
@@ -49,7 +53,23 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public void encodePassword(PasswordEncoder passwordEncoder) {
 	    this.password = passwordEncoder.encode(this.password);
 	  }

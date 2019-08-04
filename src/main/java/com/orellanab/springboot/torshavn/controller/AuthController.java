@@ -41,17 +41,6 @@ public class AuthController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/authenticate")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void authenticate() {
-
-		// we don't have to do anything here
-		// this is just a secure endpoint and the JWTFilter
-		// validates the token
-		// this service is called at startup of the app to check
-		// if the jwt token is still valid
-	}
-	
 	@CrossOrigin
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody UserDTO user) throws Exception {

@@ -9,7 +9,6 @@ import com.orellanab.springboot.torshavn.entity.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.orellanab.springboot.torshavn.repo.interfaces.UserRepo;

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="marker", schema="public")
+@Table(name="marker", schema="torshavn_maps")
 public class Marker {
 
     @Id

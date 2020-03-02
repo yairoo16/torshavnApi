@@ -64,6 +64,12 @@ public class AuthController {
 		this.userService.saveUser(user);
 		return this.jwtTokenUtil.generateToken(user.getUsername());
 	}
+	
+	@CrossOrigin
+	@GetMapping("/test")
+	public String test() {
+		return "Testing API";
+	}
 
 	private void authenticate(String username, String password) throws Exception {
 		try {
